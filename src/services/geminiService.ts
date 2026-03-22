@@ -1,6 +1,10 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const getApiKey = () => {
+  // Try to get from import.meta.env (Vite standard) or process.env (AIS platform standard)
+  const env = (import.meta as any).env;
+  return env?.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : '');
+};
 
 const SYSTEM_INSTRUCTION = `
 You are "Unity Agent", the official AI assistant for "Unity Earning". 
@@ -20,7 +24,15 @@ Respond primarily in Bengali unless the user speaks English.
 `;
 
 export async function getUnityAgentResponse(message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) {
+  const apiKey = getApiKey();
+  
+  if (!apiKey) {
+    console.error("Gemini API Key is missing. Please set VITE_GEMINI_API_KEY or GEMINI_API_KEY.");
+    return "দুঃখিত, বর্তমানে আমি সংযোগ করতে পারছি না (API Key missing)। দয়া করে আপনার টিমের সাথে যোগাযোগ করুন।";
+  }
+
   try {
+    const ai = new GoogleGenAI({ apiKey });
     const chat = ai.chats.create({
       model: "gemini-3-flash-preview",
       config: {
