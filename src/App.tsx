@@ -383,7 +383,14 @@ export default function App() {
                 <div className="flex-1 flex flex-col">
                   <div className="flex items-center gap-2 text-slate-400 text-[11px] font-semibold uppercase tracking-wider mb-2">
                     <Clock className="w-3 h-3" />
-                    {format(new Date(video.publishedAt), 'MMM dd, yyyy')}
+                    {(() => {
+                      try {
+                        const date = new Date(video.publishedAt);
+                        return isNaN(date.getTime()) ? 'Recently' : format(date, 'MMM dd, yyyy');
+                      } catch (e) {
+                        return 'Recently';
+                      }
+                    })()}
                   </div>
                   <h3 className="text-lg font-display font-bold text-brand-navy mb-2 line-clamp-2 group-hover:text-brand-gold transition-colors">
                     {video.title}
@@ -467,30 +474,76 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-brand-navy text-white/40 py-12 px-6 border-t border-white/5">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-brand-gold/20 rounded-lg flex items-center justify-center">
-              <GraduationCap className="text-brand-gold w-5 h-5" />
+      <footer className="bg-brand-navy pt-20 pb-10 px-6 border-t border-white/10">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-brand-gold rounded-lg flex items-center justify-center">
+                  <GraduationCap className="text-brand-navy w-6 h-6" />
+                </div>
+                <h2 className="text-white font-display font-bold text-2xl">Unity Earning</h2>
+              </div>
+              <p className="text-white/50 max-w-md mb-8 leading-relaxed">
+                Unity Earning is a leading e-learning platform dedicated to providing high-quality tutorials and resources for digital skills. Join our community and start your journey today.
+              </p>
+              <div className="flex gap-4">
+                {socialLinks.map((social, idx) => (
+                  <a 
+                    key={idx}
+                    href={social.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-brand-gold hover:border-brand-gold transition-all"
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
             </div>
-            <span className="text-white font-display font-bold">Unity Earning</span>
+            
+            <div>
+              <h4 className="text-white font-bold mb-6">Quick Links</h4>
+              <ul className="space-y-4">
+                <li><a href="#" className="text-white/50 hover:text-brand-teal transition-colors text-sm">All Courses</a></li>
+                <li><a href="#" className="text-white/50 hover:text-brand-teal transition-colors text-sm">Premium Work</a></li>
+                <li><a href="#" className="text-white/50 hover:text-brand-teal transition-colors text-sm">Unity Agent</a></li>
+                <li><a href="#" className="text-white/50 hover:text-brand-teal transition-colors text-sm">Success Stories</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="text-white font-bold mb-6">Support</h4>
+              <ul className="space-y-4">
+                <li><a href="#" className="text-white/50 hover:text-brand-teal transition-colors text-sm">Help Center</a></li>
+                <li><a href="#" className="text-white/50 hover:text-brand-teal transition-colors text-sm">Terms of Service</a></li>
+                <li><a href="#" className="text-white/50 hover:text-brand-teal transition-colors text-sm">Privacy Policy</a></li>
+                <li><a href="#" className="text-white/50 hover:text-brand-teal transition-colors text-sm">Contact Us</a></li>
+              </ul>
+            </div>
           </div>
           
-          <p className="text-sm">© 2026 Unity Earning E-learning Platform. All rights reserved.</p>
-          
-          <div className="flex items-center gap-6">
-            <a href="https://www.facebook.com/share/1KEphuw4kE/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-teal transition-colors"><Facebook className="w-5 h-5" /></a>
-            <a href="https://youtube.com/@unityearning-un?si=BJHHh9X7hGClM-BZ" target="_blank" rel="noopener noreferrer" className="hover:text-brand-teal transition-colors"><Youtube className="w-5 h-5" /></a>
-            <a href="https://t.me/+HuNGXZXbqktmNzg9" target="_blank" rel="noopener noreferrer" className="hover:text-brand-teal transition-colors"><Send className="w-5 h-5" /></a>
+          <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+            <p className="text-white/30 text-xs">
+              © {new Date().getFullYear()} Unity Earning. All rights reserved.
+            </p>
+            <div className="flex items-center gap-2 text-white/30 text-xs">
+              <span>Made with</span>
+              <div className="w-4 h-4 bg-red-500/20 rounded-full flex items-center justify-center">
+                <div className="w-1.5 h-1.5 bg-red-500 rounded-full" />
+              </div>
+              <span>for the community</span>
+            </div>
           </div>
         </div>
       </footer>
 
       {/* Modals */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {/* Social Links Modal */}
         {showSocialModal && (
           <motion.div
+            key="social-modal"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -543,6 +596,7 @@ export default function App() {
         {/* Premium Work Modal */}
         {showPremiumModal && (
           <motion.div
+            key="premium-modal"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -580,7 +634,7 @@ export default function App() {
                           className="flex items-center gap-4 p-4 rounded-2xl border border-slate-100 hover:border-brand-gold hover:bg-slate-50 transition-all group text-left relative overflow-hidden"
                         >
                           <div className={cn(
-                            "w-12 h-12 rounded-xl flex items-center justify-center text-white bg-gradient-to-br shadow-md group-hover:scale-105 transition-transform shrink-0",
+                            "w-12 h-12 rounded-xl flex items-center justify-center text-white bg-gradient-to-br shadow-md group-hover:scale-110 transition-transform shrink-0",
                             work.color
                           )}>
                             <div className="scale-90">{work.icon}</div>
@@ -622,255 +676,224 @@ export default function App() {
           </motion.div>
         )}
 
-        {/* Newcomer Advice Floating Button */}
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => setShowNewcomerAdvice(true)}
-          className="fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-teal text-white rounded-full shadow-2xl flex items-center justify-center group overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-          <Lightbulb className="w-7 h-7 relative z-10" />
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-brand-gold rounded-full border-2 border-white animate-bounce" />
-        </motion.button>
-
-        {/* Unity Agent Floating Button */}
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => setShowChat(true)}
-          className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-brand-gold text-brand-navy rounded-full shadow-2xl flex items-center justify-center group overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-          <Bot className="w-7 h-7 relative z-10" />
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse" />
-        </motion.button>
-
         {/* Newcomer Advice Modal */}
-        <AnimatePresence>
-          {showNewcomerAdvice && (
+        {showNewcomerAdvice && (
+          <motion.div
+            key="newcomer-advice"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[70] flex items-center justify-center p-6 bg-brand-navy/80 backdrop-blur-md"
+            onClick={() => setShowNewcomerAdvice(false)}
+          >
             <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white w-full max-w-lg rounded-[40px] overflow-hidden shadow-2xl"
+            >
+              <div className="bg-brand-teal p-10 text-white relative overflow-hidden">
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
+                <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-brand-gold/20 rounded-full blur-2xl" />
+                
+                <button 
+                  onClick={() => setShowNewcomerAdvice(false)}
+                  className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors z-10"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+                
+                <motion.div 
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  className="relative z-10"
+                >
+                  <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-xl">
+                    <Sparkles className="w-8 h-8 text-brand-gold" />
+                  </div>
+                  <h2 className="text-4xl font-display font-bold tracking-tight">সফলতার মূলমন্ত্র</h2>
+                  <p className="text-white/80 mt-3 text-lg font-medium">Unity Earning-এ আপনার ক্যারিয়ার গড়ার সেরা গাইডলাইন</p>
+                </motion.div>
+              </div>
+              
+              <div className="max-h-[60vh] overflow-y-auto p-8 custom-scrollbar">
+                <div className="space-y-8">
+                  {[
+                    {
+                      title: "কঠোর পরিশ্রম ও নিষ্ঠা",
+                      text: "নতুন অবস্থায় জয়েন করার পর অবশ্যই আপনাকে কাজ করতে হবে। অলসতা পরিহার করে কাজে মনোযোগী হতে হবে।",
+                      icon: <TrendingUp className="w-6 h-6" />,
+                      color: "bg-blue-500"
+                    },
+                    {
+                      title: "নিয়মিত মিটিংয়ে অংশগ্রহণ",
+                      text: "নিয়মিত মিটিংয়ে জয়েন করতে হবে, অন্যথায় কাজের ধরন এবং গুরুত্বপূর্ণ আপডেটগুলো বোঝা যাবে না।",
+                      icon: <Users className="w-6 h-6" />,
+                      color: "bg-purple-500"
+                    },
+                    {
+                      title: "ক্লাসে মনোযোগ ও শিক্ষা",
+                      text: "নিয়মিত ক্লাসে জয়েন করতে হবে এবং টিচার যেভাবে শিখাচ্ছেন ঠিক সেভাবে সঠিকভাবে শিখতে হবে।",
+                      icon: <Video className="w-6 h-6" />,
+                      color: "bg-emerald-500"
+                    },
+                    {
+                      title: "ডেইলি ওয়ার্ক সাবমিট",
+                      text: "নিয়মিত ক্লাসের কাজগুলো (Work) সাবমিট করতে হবে। প্রতিদিনের কাজ প্রতিদিন নির্দিষ্ট সময়েই শেষ করতে হবে।",
+                      icon: <ClipboardCheck className="w-6 h-6" />,
+                      color: "bg-orange-500"
+                    },
+                    {
+                      title: "টিম লিডার ও ট্রেইনার গাইডলাইন",
+                      text: "টিম লিডার এবং টিম ট্রেইনারের দেওয়া সকল গাইডলাইন ও নির্দেশনা সবসময় মেনে চলতে হবে। এটি আপনার সফলতার জন্য অত্যন্ত জরুরি।",
+                      icon: <GraduationCap className="w-6 h-6" />,
+                      color: "bg-indigo-500"
+                    },
+                    {
+                      title: "অ্যাকাউন্ট নিরাপত্তা",
+                      text: "আপনার অ্যাকাউন্টের পাসওয়ার্ড সবসময় সুরক্ষিত রাখতে হবে। এটি আপনার ব্যক্তিগত সম্পদ, তাই কাউকে শেয়ার করবেন না।",
+                      icon: <ShieldCheck className="w-6 h-6" />,
+                      color: "bg-red-500"
+                    }
+                  ].map((item, i) => (
+                    <motion.div 
+                      key={i}
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: i * 0.1 }}
+                      className="flex gap-6 group"
+                    >
+                      <div className={cn(
+                        "w-14 h-14 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg transition-transform group-hover:scale-110 duration-300",
+                        item.color
+                      )}>
+                        {item.icon}
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-xl font-bold text-brand-navy flex items-center gap-2">
+                          {item.title}
+                          <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-brand-teal transition-colors" />
+                        </h3>
+                        <p className="text-slate-600 leading-relaxed font-medium">{item.text}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-8 bg-slate-50 border-t border-slate-100">
+                <button 
+                  onClick={() => setShowNewcomerAdvice(false)}
+                  className="w-full bg-brand-navy text-white py-5 rounded-2xl font-bold hover:bg-brand-navy/90 transition-all shadow-xl shadow-brand-navy/20 flex items-center justify-center gap-3 text-lg"
+                >
+                  <CheckCircle2 className="w-6 h-6 text-brand-gold" />
+                  আমি সবগুলো নিয়ম মেনে চলব
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* Unity Agent Chat Modal */}
+        {showChat && (
+          <div key="chat-modal" className="fixed inset-0 z-[60] pointer-events-none">
+            <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[70] flex items-center justify-center p-6 bg-brand-navy/80 backdrop-blur-md"
-              onClick={() => setShowNewcomerAdvice(false)}
+              className="absolute inset-0 bg-brand-navy/60 backdrop-blur-sm pointer-events-auto" 
+              onClick={() => setShowChat(false)} 
+            />
+            
+            <motion.div
+              initial={{ y: '100%', opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: '100%', opacity: 0 }}
+              className="absolute bottom-0 right-0 sm:bottom-6 sm:right-6 w-full sm:w-[400px] h-[85vh] sm:h-[600px] bg-white sm:rounded-[32px] rounded-t-[32px] shadow-2xl flex flex-col overflow-hidden pointer-events-auto"
             >
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
-                className="bg-white w-full max-w-lg rounded-[40px] overflow-hidden shadow-2xl"
-              >
-                <div className="bg-brand-teal p-10 text-white relative overflow-hidden">
-                  {/* Decorative background elements */}
-                  <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
-                  <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-brand-gold/20 rounded-full blur-2xl" />
-                  
-                  <button 
-                    onClick={() => setShowNewcomerAdvice(false)}
-                    className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors z-10"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                  
-                  <motion.div 
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    className="relative z-10"
-                  >
-                    <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 shadow-xl">
-                      <Sparkles className="w-8 h-8 text-brand-gold" />
+              <div className="bg-brand-navy p-5 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-brand-gold rounded-xl flex items-center justify-center">
+                    <Bot className="text-brand-navy w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-white font-bold leading-none">Unity Agent</h3>
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <div className="w-1.5 h-1.5 bg-brand-teal rounded-full animate-pulse" />
+                      <span className="text-brand-teal text-[10px] font-bold uppercase tracking-widest">Online Support</span>
                     </div>
-                    <h2 className="text-4xl font-display font-bold tracking-tight">সফলতার মূলমন্ত্র</h2>
-                    <p className="text-white/80 mt-3 text-lg font-medium">Unity Earning-এ আপনার ক্যারিয়ার গড়ার সেরা গাইডলাইন</p>
-                  </motion.div>
-                </div>
-                
-                <div className="max-h-[60vh] overflow-y-auto p-8 custom-scrollbar">
-                  <div className="space-y-8">
-                    {[
-                      {
-                        title: "কঠোর পরিশ্রম ও নিষ্ঠা",
-                        text: "নতুন অবস্থায় জয়েন করার পর অবশ্যই আপনাকে কাজ করতে হবে। অলসতা পরিহার করে কাজে মনোযোগী হতে হবে।",
-                        icon: <TrendingUp className="w-6 h-6" />,
-                        color: "bg-blue-500"
-                      },
-                      {
-                        title: "নিয়মিত মিটিংয়ে অংশগ্রহণ",
-                        text: "নিয়মিত মিটিংয়ে জয়েন করতে হবে, অন্যথায় কাজের ধরন এবং গুরুত্বপূর্ণ আপডেটগুলো বোঝা যাবে না।",
-                        icon: <Users className="w-6 h-6" />,
-                        color: "bg-purple-500"
-                      },
-                      {
-                        title: "ক্লাসে মনোযোগ ও শিক্ষা",
-                        text: "নিয়মিত ক্লাসে জয়েন করতে হবে এবং টিচার যেভাবে শিখাচ্ছেন ঠিক সেভাবে সঠিকভাবে শিখতে হবে।",
-                        icon: <Video className="w-6 h-6" />,
-                        color: "bg-emerald-500"
-                      },
-                      {
-                        title: "ডেইলি ওয়ার্ক সাবমিট",
-                        text: "নিয়মিত ক্লাসের কাজগুলো (Work) সাবমিট করতে হবে। প্রতিদিনের কাজ প্রতিদিন নির্দিষ্ট সময়েই শেষ করতে হবে।",
-                        icon: <ClipboardCheck className="w-6 h-6" />,
-                        color: "bg-orange-500"
-                      },
-                      {
-                        title: "টিম লিডার ও ট্রেইনার গাইডলাইন",
-                        text: "টিম লিডার এবং টিম ট্রেইনারের দেওয়া সকল গাইডলাইন ও নির্দেশনা সবসময় মেনে চলতে হবে। এটি আপনার সফলতার জন্য অত্যন্ত জরুরি।",
-                        icon: <GraduationCap className="w-6 h-6" />,
-                        color: "bg-indigo-500"
-                      },
-                      {
-                        title: "অ্যাকাউন্ট নিরাপত্তা",
-                        text: "আপনার অ্যাকাউন্টের পাসওয়ার্ড সবসময় সুরক্ষিত রাখতে হবে। এটি আপনার ব্যক্তিগত সম্পদ, তাই কাউকে শেয়ার করবেন না।",
-                        icon: <ShieldCheck className="w-6 h-6" />,
-                        color: "bg-red-500"
-                      }
-                    ].map((item, i) => (
-                      <motion.div 
-                        key={i}
-                        initial={{ x: -20, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="flex gap-6 group"
-                      >
-                        <div className={cn(
-                          "w-14 h-14 rounded-2xl flex items-center justify-center text-white shrink-0 shadow-lg transition-transform group-hover:scale-110 duration-300",
-                          item.color
-                        )}>
-                          {item.icon}
-                        </div>
-                        <div className="space-y-1">
-                          <h3 className="text-xl font-bold text-brand-navy flex items-center gap-2">
-                            {item.title}
-                            <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-brand-teal transition-colors" />
-                          </h3>
-                          <p className="text-slate-600 leading-relaxed font-medium">{item.text}</p>
-                        </div>
-                      </motion.div>
-                    ))}
                   </div>
                 </div>
+                <button 
+                  onClick={() => setShowChat(false)}
+                  className="text-white/50 hover:text-white transition-colors p-1"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
 
-                <div className="p-8 bg-slate-50 border-t border-slate-100">
-                  <button 
-                    onClick={() => setShowNewcomerAdvice(false)}
-                    className="w-full bg-brand-navy text-white py-5 rounded-2xl font-bold hover:bg-brand-navy/90 transition-all shadow-xl shadow-brand-navy/20 flex items-center justify-center gap-3 text-lg"
+              <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50">
+                {chatMessages.map((msg, idx) => (
+                  <div 
+                    key={idx}
+                    className={cn(
+                      "flex w-full",
+                      msg.role === 'user' ? "justify-end" : "justify-start"
+                    )}
                   >
-                    <CheckCircle2 className="w-6 h-6 text-brand-gold" />
-                    আমি সবগুলো নিয়ম মেনে চলব
+                    <div className={cn(
+                      "max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed shadow-sm",
+                      msg.role === 'user' 
+                        ? "bg-brand-navy text-white rounded-tr-none" 
+                        : "bg-white text-brand-navy border border-slate-100 rounded-tl-none"
+                    )}>
+                      {msg.text}
+                    </div>
+                  </div>
+                ))}
+                {isTyping && (
+                  <div className="flex justify-start">
+                    <div className="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 flex gap-1">
+                      <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" />
+                      <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:0.2s]" />
+                      <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:0.4s]" />
+                    </div>
+                  </div>
+                )}
+                <div ref={chatEndRef} />
+              </div>
+
+              <div className="p-4 bg-white border-t border-slate-100">
+                <form 
+                  onSubmit={handleSendMessage}
+                  className="flex gap-2"
+                >
+                  <input 
+                    ref={inputRef}
+                    type="text" 
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                    placeholder="আপনার প্রশ্ন লিখুন..."
+                    className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold transition-all"
+                  />
+                  <button 
+                    type="submit"
+                    disabled={!userInput.trim() || isTyping}
+                    className="w-12 h-12 bg-brand-gold text-brand-navy rounded-xl flex items-center justify-center hover:bg-brand-gold/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
+                  >
+                    <Send className="w-5 h-5" />
                   </button>
-                </div>
-              </motion.div>
+                </form>
+              </div>
             </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Unity Agent Chat Modal */}
-        <AnimatePresence>
-          {showChat && (
-            <div className="fixed inset-0 z-[60] pointer-events-none">
-              {/* Backdrop */}
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-brand-navy/60 backdrop-blur-sm pointer-events-auto" 
-                onClick={() => setShowChat(false)} 
-              />
-              
-              <motion.div
-                initial={{ y: '100%', opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: '100%', opacity: 0 }}
-                className="absolute bottom-0 right-0 sm:bottom-6 sm:right-6 w-full sm:w-[400px] h-[85vh] sm:h-[600px] bg-white sm:rounded-[32px] rounded-t-[32px] shadow-2xl flex flex-col overflow-hidden pointer-events-auto"
-              >
-                {/* Chat Header */}
-                <div className="bg-brand-navy p-5 flex items-center justify-between shrink-0">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-brand-gold rounded-xl flex items-center justify-center">
-                      <Bot className="text-brand-navy w-6 h-6" />
-                    </div>
-                    <div>
-                      <h3 className="text-white font-bold leading-none">Unity Agent</h3>
-                      <div className="flex items-center gap-1.5 mt-1">
-                        <div className="w-1.5 h-1.5 bg-brand-teal rounded-full animate-pulse" />
-                        <span className="text-brand-teal text-[10px] font-bold uppercase tracking-widest">Online Support</span>
-                      </div>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => setShowChat(false)}
-                    className="text-white/50 hover:text-white transition-colors p-1"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
-                </div>
-
-                {/* Chat Messages */}
-                <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50">
-                  {chatMessages.map((msg, idx) => (
-                    <div 
-                      key={idx}
-                      className={cn(
-                        "flex w-full",
-                        msg.role === 'user' ? "justify-end" : "justify-start"
-                      )}
-                    >
-                      <div className={cn(
-                        "max-w-[85%] p-4 rounded-2xl text-sm leading-relaxed shadow-sm",
-                        msg.role === 'user' 
-                          ? "bg-brand-navy text-white rounded-tr-none" 
-                          : "bg-white text-brand-navy border border-slate-100 rounded-tl-none"
-                      )}>
-                        {msg.text}
-                      </div>
-                    </div>
-                  ))}
-                  {isTyping && (
-                    <div className="flex justify-start">
-                      <div className="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm border border-slate-100 flex gap-1">
-                        <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce" />
-                        <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:0.2s]" />
-                        <div className="w-1.5 h-1.5 bg-slate-300 rounded-full animate-bounce [animation-delay:0.4s]" />
-                      </div>
-                    </div>
-                  )}
-                  <div ref={chatEndRef} />
-                </div>
-
-                {/* Chat Input */}
-                <div className="p-4 bg-white border-t border-slate-100">
-                  <form 
-                    onSubmit={handleSendMessage}
-                    className="flex gap-2"
-                  >
-                    <input 
-                      ref={inputRef}
-                      type="text" 
-                      value={userInput}
-                      onChange={(e) => setUserInput(e.target.value)}
-                      placeholder="আপনার প্রশ্ন লিখুন..."
-                      className="flex-1 bg-slate-50 border-none rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-gold transition-all"
-                    />
-                    <button 
-                      type="submit"
-                      disabled={!userInput.trim() || isTyping}
-                      className="w-12 h-12 bg-brand-gold text-brand-navy rounded-xl flex items-center justify-center hover:bg-brand-gold/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
-                    >
-                      <Send className="w-5 h-5" />
-                    </button>
-                  </form>
-                </div>
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
+          </div>
+        )}
 
         {/* Video Player Modal */}
         {selectedVideo && (
           <motion.div
+            key="video-modal"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -905,6 +928,29 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Floating Buttons */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setShowNewcomerAdvice(true)}
+        className="fixed bottom-24 right-6 z-50 w-14 h-14 bg-brand-teal text-white rounded-full shadow-2xl flex items-center justify-center group overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+        <Lightbulb className="w-7 h-7 relative z-10" />
+        <div className="absolute -top-1 -right-1 w-4 h-4 bg-brand-gold rounded-full border-2 border-white animate-bounce" />
+      </motion.button>
+
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setShowChat(true)}
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-brand-gold text-brand-navy rounded-full shadow-2xl flex items-center justify-center group overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+        <Bot className="w-7 h-7 relative z-10" />
+        <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white animate-pulse" />
+      </motion.button>
     </div>
   );
 }
