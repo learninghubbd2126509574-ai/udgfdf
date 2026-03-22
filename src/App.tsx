@@ -525,10 +525,10 @@ export default function App() {
           
           <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
             <p className="text-white/30 text-xs">
-              © {new Date().getFullYear()} Unity Earning. All rights reserved.
+              © {new Date().getFullYear()} All rights reserved by Unity Earning.
             </p>
             <div className="flex items-center gap-2 text-white/30 text-xs">
-              <span>Made with</span>
+              <span>Created by Unity Earning</span>
               <div className="w-4 h-4 bg-red-500/20 rounded-full flex items-center justify-center">
                 <div className="w-1.5 h-1.5 bg-red-500 rounded-full" />
               </div>
