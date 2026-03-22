@@ -1,9 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
 
 const getApiKey = () => {
-  // Try to get from import.meta.env (Vite standard) or process.env (AIS platform standard)
-  const env = (import.meta as any).env;
-  return env?.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : '');
+  // Vite replaces these with string literals during build
+  // We check both VITE_ prefix and process.env
+  try {
+    const env = (import.meta as any).env;
+    return env?.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : '') || '';
+  } catch (e) {
+    return '';
+  }
 };
 
 const SYSTEM_INSTRUCTION = `
@@ -27,8 +32,8 @@ export async function getUnityAgentResponse(message: string, history: { role: 'u
   const apiKey = getApiKey();
   
   if (!apiKey) {
-    console.error("Gemini API Key is missing. Please set VITE_GEMINI_API_KEY or GEMINI_API_KEY.");
-    return "দুঃখিত, বর্তমানে আমি সংযোগ করতে পারছি না (API Key missing)। দয়া করে আপনার টিমের সাথে যোগাযোগ করুন।";
+    console.error("Gemini API Key is missing.");
+    return "দুঃখিত, বর্তমানে আমি সংযোগ করতে পারছি না। দয়া করে আপনার টিমের সাথে যোগাযোগ করুন।";
   }
 
   try {
